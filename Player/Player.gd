@@ -7,6 +7,7 @@ var speed = 5.0
 var max_speed = 400.0
 var health = 10 
 var Effects = null
+var Explosion = null
 
 
 
@@ -48,13 +49,18 @@ func get_input():
 func damage(d):
 	health -= d
 	if health <= 0:
+		Effects = get_node_or_null("/root/Game/Effects")
 	if Effects != null:
- 		Effects = get_node_or_null("/root/Game/Effects")
-  	if Effects != null:
-  		var explosion = Explosion.instance()
-  		Effects.add_child(explosion)
-  		explosion.global_position = global_position
-  		hide()
-  		yield(explosion, "animation_finished")
+		var explosion = Explosion.instance()
+		Effects.add_child(explosion)
+		explosion.global_position = global_position
+		hide()
+		yield(explosion, "animation_finished")
 	queue_free()
 
+
+
+func _on_Area2D_body_entered(body):
+	if body.name == "Player":
+		body.damage(100)
+		damage(100)
